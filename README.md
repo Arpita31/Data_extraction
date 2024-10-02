@@ -40,7 +40,7 @@ pipenv run ...
 
 ## Database Development
 We store the database in /resource/normanpd.db
-Used sqlite3 to create a database with columns incident_time, incident_number, incident_location, nature and incident_ori.
+<br />Used sqlite3 to create a database with columns incident_time, incident_number, incident_location, nature and incident_ori.
 
 ## Bugs and Assumptions
 1. We will consider the first incident file in the whole website.
