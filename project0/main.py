@@ -1,7 +1,7 @@
 # Example main.py
 import argparse
 
-import project3 as project
+import project0 as project
 
 def main(url):
     # Download data
