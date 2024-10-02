@@ -1,6 +1,6 @@
 # cis6930fa24 -- Project 0 
 
-Name:
+Name: Arpita Patnaik
 
 # Project Description 
 download an incident pdf file from (https://ufdatastudio.com/cis6930fa24/assignments/project0).
@@ -20,7 +20,6 @@ pipenv run ...
 
 
 ## Functions
-#### main.py \
 1. fetchincidents(url): Takes the url as argument
     a. Used requests library to fetch response from URL
     b. Used BeautifulSoup to parse response
