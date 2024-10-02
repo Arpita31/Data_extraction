@@ -117,8 +117,9 @@ def createdb():
             db_path: path for the databse.
     """
     # Define the path and database name
-    par_dir = os.path.abspath(os.path.join(os.getcwd(), os.pardir))
-    db_directory = os.path.join(par_dir, 'resources')
+    # par_dir = os.path.abspath(os.path.join(os.getcwd(), os.pardir))
+    # db_directory = os.path.join(par_dir, 'resources')
+    db_directory = 'resources'
     db_path = os.path.join(db_directory, 'normanpd.db')
     # Remove the directory if it exists, and recreate it
     if os.path.exists(db_directory):
