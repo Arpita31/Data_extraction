@@ -16,7 +16,7 @@ def test_fetchincidents_success():
 def test_extractincidents():
     # Test if extracting the correct data from pdf file
     extracted_data = extractincidents("Daily_Incident_Summary.pdf")
-
+    
     # Ensure the extracted data is not empty and matches expected structure
     assert len(extracted_data) > 1
     assert extracted_data[0] == ['8/1/2024 / 0:04', '2024-00055419', '1345 W LINDSEY ST', 'Traffic Stop', 'OK0140200']
