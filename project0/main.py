@@ -33,21 +33,21 @@ def fetchincidents(url):
         
         # Check for incidents PDF using regular expression and download
         for link in links:
-            if link.get('href'):
-                if re.search("daily_incident_summary.pdf", link.get('href')):                
-                    pdf_url = urllib.parse.urljoin(url, link.get('href'))  # Handle relative URLs
-                    response = urllib.request.urlopen(pdf_url)
-                    temp = os.path.join(os.getcwd(), 'resources')
-                    file_path = os.path.join(temp, "Daily_Incident_Summary.pdf")
-                    
-                    if not os.path.exists(temp):
-                        os.makedirs(temp)
-                    
-                    with open(file_path, 'wb') as pdf_file:
-                        pdf_file.write(response.read())
-                    
-                    print(f"PDF file downloaded and saved to: {file_path}")
-                    return file_path
+	    href = link.get('href')
+            if href and re.search("daily_incident_summary.pdf", href):                
+		    pdf_url = urllib.parse.urljoin(url, link.get('href'))  # Handle relative URLs
+		    response = urllib.request.urlopen(pdf_url)
+		    temp = os.path.join(os.getcwd(), 'resources')
+		    file_path = os.path.join(temp, "Daily_Incident_Summary.pdf")
+		    
+		    if not os.path.exists(temp):
+			os.makedirs(temp)
+		    
+		    with open(file_path, 'wb') as pdf_file:
+			pdf_file.write(response.read())
+		    
+		    print(f"PDF file downloaded and saved to: {file_path}")
+		    return file_path
         
         # If no PDF found
         print("No PDF file found.")
