@@ -1,8 +1,8 @@
-# cis6930fa24 -- Project 0 -- Template
+# cis6930fa24 -- Project 0 
 
 Name:
 
-# Project Description (in your own words)
+# Project Description 
 download an incident pdf file from (https://ufdatastudio.com/cis6930fa24/assignments/project0).
 Extract each incident records from the pdf file.
 Create  a database using sqlite and store the records.
@@ -10,6 +10,7 @@ Display the "nature" and their total occurance count from the database on the co
 
 # How to install
 pipenv install bs4
+<br />
 pipenv install pypdf
 
 
