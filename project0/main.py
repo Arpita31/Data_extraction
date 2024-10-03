@@ -33,7 +33,7 @@ def fetchincidents(url):
         # Check for incidents PDF using regular expression and download
         for link in links:
             if link.get('href'):
-                if re.search("daily_incident_summary.pdf", link.get('href')):                
+                if re.search(r"incident_summary\.pdf", link.get('href')):                
                     pdf_url = urllib.parse.urljoin(url, link.get('href'))  # Handle relative URLs
                     response = urllib.request.urlopen(pdf_url)
                     temp = os.path.join(os.getcwd(), 'resources')
