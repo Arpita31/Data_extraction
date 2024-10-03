@@ -35,12 +35,12 @@ def fetchincidents(url):
                 if re.search("daily_incident_summary.pdf", link.get('href')):                
                     pdf_url = urllib.parse.urljoin(url, link.get('href'))  # Handle relative URLs
                     response = urllib.request.urlopen(pdf_url)
-                    # temp = os.path.join(os.getcwd(), 'resources')
-                    # file_path = os.path.join(temp, "Daily_Incident_Summary.pdf")
+                    temp = os.path.join(os.getcwd(), 'resources')
+                    file_path = os.path.join(temp, "Daily_Incident_Summary.pdf")
                     
-                    # if not os.path.exists(temp):
-                    #     os.makedirs(temp)
-                    file_path = "resources/Daily_Incident_Summary.pdf"
+                    if not os.path.exists(temp):
+                        os.makedirs(temp)
+                    
                     with open(file_path, 'wb') as pdf_file:
                         pdf_file.write(response.read())
                     
@@ -124,9 +124,11 @@ def createdb():
     db_directory = 'resources'
     db_path = os.path.join(db_directory, 'normanpd.db')
     # Remove the directory if it exists, and recreate it
-    if os.path.exists(db_path):
-        os.remove(db_path) # Remove the existing directory and its contents
+    if os.path.exists(db_directory):
+        shutil.rmtree(db_directory) # Remove the existing directory and its contents
 
+    # Create the directory
+    os.makedirs(db_directory)
     with sqlite3.connect(db_path) as con:
         cur = con.cursor()
         cur.execute("CREATE TABLE incidents ( \
