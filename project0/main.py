@@ -18,54 +18,23 @@ def fetchincidents(url):
         Return:
             file_path: path of the downloaded pdf file
     '''
-    headers = {
-            'User-Agent': ("Mozilla/5.0 (X11; Linux i686) AppleWebKit/537.17 "
-                        "(KHTML, like Gecko) Chrome/24.0.1312.27 Safari/537.17")
-        }
 
- 
-    # Fetch the HTML content from the URL
-    request = urllib.request.Request(url, headers=headers)
-    response = urllib.request.urlopen(request)
-    html_content = response.read().decode('utf-8')
+    headers = {}
+    headers['User-Agent'] = "Mozilla/5.0 (X11; Linux i686) AppleWebKit/537.17 (KHTML, like Gecko) Chrome/24.0.1312.27 Safari/537.17"                          
 
-    # Regular expression to find the incident PDF link in href attributes
-    pdf_regex = r'href=[\'"]([^\'"]*incident_summary\.pdf)[\'"]'
+    data = urllib.request.urlopen(urllib.request.Request(url, headers=headers)).read()
+    temp = os.path.join(os.getcwd(), 'resources')
+    file_path = os.path.join(temp, "Daily_Incident_Summary.pdf")
+                    
+    if not os.path.exists(temp):
+        os.makedirs(temp)
 
-    # Find all matches in the HTML content
-    matches = re.findall(pdf_regex, html_content, re.IGNORECASE)
+    with open(file_path, 'wb') as pdf_file:
+            pdf_file.write(data)
+    
+    return file_path
 
-    if matches:
-        # Use the first match (assuming it's the desired PDF)
-        pdf_href = matches[0]
 
-        # Construct the full URL for the PDF file
-        pdf_url = urllib.parse.urljoin(url, pdf_href)
-        print(f"Found PDF URL: {pdf_url}")
-
-        # Download the PDF file
-        pdf_response = urllib.request.urlopen(pdf_url)
-        pdf_data = pdf_response.read()
-
-        # Create a directory for saving the PDF if it doesn't exist
-        temp_dir = os.path.join(os.getcwd(), 'resources')
-        os.makedirs(temp_dir, exist_ok=True)
-
-        # Save the PDF file
-        file_name = "Daily_Incident_Summary.pdf"
-        file_path = os.path.join(temp_dir, file_name)
-        with open(file_path, 'wb') as pdf_file:
-            pdf_file.write(pdf_data)
-
-        print(f"PDF file downloaded and saved to: {file_path}")
-        return file_path
-        
-        # # If no PDF found
-        # print("No PDF file found.")
-        # return None
-    # except Exception as e:
-    #     print(f"Incidents not found: {e}")
-    #     return None
 def extractincidents(incident_data):
     """
         Extracts the data from pdf file using PdfReader. Extracts the data using regular expression match and stores in a list.
