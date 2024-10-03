@@ -63,10 +63,7 @@ def extractincidents(incident_data):
             all_rows: A list containing all the individual incident records
     """
     try:
-        if incident_data:
-            reader = PdfReader(incident_data)
-        else:
-            return None
+        reader = PdfReader(incident_data)
         all_rows = []
         page = reader.pages[0]
         first_page = True
