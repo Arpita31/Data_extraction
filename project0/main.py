@@ -122,14 +122,14 @@ def createdb():
     db_directory = 'resources'
     db_path = os.path.join(os.getcwd(),db_directory, 'normanpd.db')
     # Remove the directory if it exists, and recreate it
-    # if os.path.exists(db_directory):
-    #     shutil.rmtree(db_directory) # Remove the existing directory and its contents
+    if os.path.exists(db_path):
+        os.remove(db_path) # Remove the existing directory and its contents
 
     # Create the directory
     # os.makedirs(db_directory)
     with sqlite3.connect(db_path) as con:
         cur = con.cursor()
-        cur.execute("CREATE TABLE IF NOT EXISTS incidents ( \
+        cur.execute("CREATE TABLE incidents ( \
                         incident_time TEXT, \
                         incident_number TEXT, \
                         incident_location TEXT, \
