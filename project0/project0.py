@@ -29,7 +29,6 @@ def fetchincidents(url):
 
     with open('resources/DailyIncidentSummary.pdf', 'wb') as pdf_file:
             pdf_file.write(data)
-            print(type(data))
     return data
 
 
@@ -118,7 +117,6 @@ def createdb():
                     );")
         # To verify if the table ahs been created
         res = cur.execute("SELECT name FROM sqlite_master")
-        print(f"Table created '{res.fetchone()[0]}'")
     return db_path
 
 def populatedb(db, incidents):
@@ -131,7 +129,6 @@ def populatedb(db, incidents):
 
     """
     if not incidents:
-        print("Incidents are not available.")
         return
     try:
         with sqlite3.connect(db) as con:
@@ -168,7 +165,6 @@ def status(db):
 
             # Fetch and print the results
             results = cur.fetchall()
-            print(f"fetched results = {len(results)}")
             for nature, count in results:
                 print(f"{nature}|{count}")
     except Exception as e:
