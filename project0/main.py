@@ -21,39 +21,39 @@ def fetchincidents(url):
     print(f"The url is = {url}")
     headers = {}
     headers['User-Agent'] = "Mozilla/5.0 (X11; Linux i686) AppleWebKit/537.17 (KHTML, like Gecko) Chrome/24.0.1312.27 Safari/537.17"                          
-    try:
-        data = urllib.request.urlopen(urllib.request.Request(url, headers=headers)).read()
+    # try:
+    data = urllib.request.urlopen(urllib.request.Request(url, headers=headers)).read()
+    
+    # Parse the HTML content with BeautifulSoup
+    soup = BeautifulSoup(data, 'html.parser')
+    
+    # For all hyperlinks 
+    links = soup.find_all('a')
+    temp = os.path.join(os.getcwd(), 'resources')
+    file_path = os.path.join(temp, "Daily_Incident_Summary.pdf")
+    # Check for incidents PDF using regular expression and download
+    for link in links:
+        if link.get('href'):
+            if re.search(r"incident_summary.pdf", link.get('href')):                
+                pdf_url = urllib.parse.urljoin(url, link.get('href'))  # Handle relative URLs
+                response = urllib.request.urlopen(pdf_url)
+                
+                if not os.path.exists(temp):
+                    os.makedirs(temp)
+                
+                with open(file_path, 'wb') as pdf_file:
+                    pdf_file.write(response.read())
+                
+                print(f"PDF file downloaded and saved to: {file_path}")
+                break
+    return file_path
         
-        # Parse the HTML content with BeautifulSoup
-        soup = BeautifulSoup(data, 'html.parser')
-        
-        # For all hyperlinks 
-        links = soup.find_all('a')
-        
-        # Check for incidents PDF using regular expression and download
-        for link in links:
-            if link.get('href'):
-                if re.search(r"incident_summary.pdf", link.get('href')):                
-                    pdf_url = urllib.parse.urljoin(url, link.get('href'))  # Handle relative URLs
-                    response = urllib.request.urlopen(pdf_url)
-                    temp = os.path.join(os.getcwd(), 'resources')
-                    file_path = os.path.join(temp, "Daily_Incident_Summary.pdf")
-                    
-                    if not os.path.exists(temp):
-                        os.makedirs(temp)
-                    
-                    with open(file_path, 'wb') as pdf_file:
-                        pdf_file.write(response.read())
-                    
-                    print(f"PDF file downloaded and saved to: {file_path}")
-                    return file_path
-        
-        # If no PDF found
-        print("No PDF file found.")
-        return None
-    except Exception as e:
-        print(f"Incidents not found: {e}")
-        return None
+        # # If no PDF found
+        # print("No PDF file found.")
+        # return None
+    # except Exception as e:
+    #     print(f"Incidents not found: {e}")
+    #     return None
 def extractincidents(incident_data):
     """
         Extracts the data from pdf file using PdfReader. Extracts the data using regular expression match and stores in a list.
