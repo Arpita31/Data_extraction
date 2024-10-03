@@ -101,7 +101,7 @@ def createdb():
     # par_dir = os.path.abspath(os.path.join(os.getcwd(), os.pardir))
     # db_directory = os.path.join(par_dir, 'resources')
     db_directory = 'project0/resources'
-    db_path = os.path.join(os.getcwd(),db_directory, 'normanpd.db/')
+    db_path = os.path.join(os.getcwd(),db_directory, 'normanpd.db')
     # Remove the directory if it exists, and recreate it
     if os.path.exists(db_path):
         os.remove(db_path) # Remove the existing directory and its contents

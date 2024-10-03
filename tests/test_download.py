@@ -15,7 +15,7 @@ def test_fetchincidents_success():
 
 def test_extractincidents():
     # Test if extracting the correct data from pdf file
-    temp = os.path.join(os.getcwd(), 'resources')
+    temp = os.path.join(os.getcwd(), 'project0/resources')
     file_path = os.path.join(temp, "Daily_Incident_Summary.pdf")
     print(file_path)
     extracted_data = extractincidents(file_path)
@@ -27,7 +27,7 @@ def test_extractincidents():
 def test_createdb_success():
     # Test creation of database
     # Ensure the resources directory doesn't exist before test
-    path = os.path.join(os.getcwd(), 'resources/normanpd.db')
+    path = os.path.join(os.getcwd(), 'project0/resources/normanpd.db')
     if os.path.exists(path):
         os.remove(path)
 
@@ -42,7 +42,7 @@ def test_createdb_success():
 def test_populatedb_success():
     # Test data insertion in database
     # Create a test database
-    path = os.path.join(os.getcwd(), 'resources/normanpd.db')
+    path = os.path.join(os.getcwd(), 'project0/resources/normanpd.db')
     if os.path.exists(path):
         os.remove(path)
     db_path = createdb()
@@ -70,7 +70,7 @@ def test_populatedb_success():
 def test_status_success(capsys):
     # Test 
     # Create a test database
-    path = os.path.join(os.getcwd(), 'resources/normanpd.db')
+    path = os.path.join(os.getcwd(), 'project0/resources/normanpd.db')
     if os.path.exists(path):
         os.remove(path)
     db_path = createdb()
