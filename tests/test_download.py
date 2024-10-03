@@ -10,12 +10,12 @@ import sqlite3
 
 def test_fetchincidents_success():
     # Test if the incident pdf is getting downloaded 
-    pdf_path = fetchincidents("https://www.normanok.gov/public-safety/police-department/crime-prevention-data/department-activity-reports")
+    pdf_path = fetchincidents("https://www.normanok.gov/sites/default/files/documents/2024-08/2024-08-01_daily_incident_summary.pdf")
     assert pdf_path.endswith("Daily_Incident_Summary.pdf")
 
 def test_extractincidents():
     # Test if extracting the correct data from pdf file
-    temp = os.path.join(os.getcwd(), 'tests/resources')
+    temp = os.path.join(os.getcwd(), 'resources')
     file_path = os.path.join(temp, "Daily_Incident_Summary.pdf")
     print(file_path)
     extracted_data = extractincidents(file_path)
@@ -27,8 +27,9 @@ def test_extractincidents():
 def test_createdb_success():
     # Test creation of database
     # Ensure the resources directory doesn't exist before test
-    if os.path.exists('resources'):
-        shutil.rmtree('resources')
+    path = os.path.join(os.getcwd(), 'resources/normanpd.db')
+    if os.path.exists(path):
+        os.remove(path)
 
     db_path = createdb()
 
@@ -41,6 +42,9 @@ def test_createdb_success():
 def test_populatedb_success():
     # Test data insertion in database
     # Create a test database
+    path = os.path.join(os.getcwd(), 'resources/normanpd.db')
+    if os.path.exists(path):
+        os.remove(path)
     db_path = createdb()
 
     # Test data for incidents
@@ -66,6 +70,9 @@ def test_populatedb_success():
 def test_status_success(capsys):
     # Test 
     # Create a test database
+    path = os.path.join(os.getcwd(), 'resources/normanpd.db')
+    if os.path.exists(path):
+        os.remove(path)
     db_path = createdb()
 
     # Test data for incidents
