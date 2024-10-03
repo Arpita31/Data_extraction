@@ -23,8 +23,8 @@ def fetchincidents(url):
     # temp = os.path.join(os.getcwd(), 'resources/')
     # file_path = os.path.join(temp, "Daily_Incident_Summary.pdf")
     
-    # if not os.path.exists(temp):
-    #     os.makedirs(temp)
+    if not os.path.exists('resources/'):
+        os.makedirs('resources/')
 
     with open('resources/DailyIncidentSummary.pdf', 'wb') as pdf_file:
             pdf_file.write(data)
