@@ -15,7 +15,10 @@ def test_fetchincidents_success():
 
 def test_extractincidents():
     # Test if extracting the correct data from pdf file
-    extracted_data = extractincidents("Daily_Incident_Summary.pdf")
+    temp = os.path.join(os.getcwd(), 'tests/resources')
+    file_path = os.path.join(temp, "Daily_Incident_Summary.pdf")
+    print(file_path)
+    extracted_data = extractincidents(file_path)
     
     # Ensure the extracted data is not empty and matches expected structure
     assert len(extracted_data) > 1

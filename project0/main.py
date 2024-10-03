@@ -35,7 +35,7 @@ def fetchincidents(url):
                 if re.search("daily_incident_summary.pdf", link.get('href')):                
                     pdf_url = urllib.parse.urljoin(url, link.get('href'))  # Handle relative URLs
                     response = urllib.request.urlopen(pdf_url)
-                    temp = os.path.join(os.getcwd(), 'resources')
+                    temp = os.path.join(os.getcwd(), 'project0/resources')
                     file_path = os.path.join(temp, "Daily_Incident_Summary.pdf")
                     
                     if not os.path.exists(temp):
