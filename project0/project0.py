@@ -1,5 +1,4 @@
 import urllib.request
-from bs4 import BeautifulSoup
 import re
 import os
 import pypdf
@@ -16,38 +15,22 @@ def fetchincidents(url):
         Return:
             file_path: path of the downloaded pdf file
     '''
+
     headers = {}
     headers['User-Agent'] = "Mozilla/5.0 (X11; Linux i686) AppleWebKit/537.17 (KHTML, like Gecko) Chrome/24.0.1312.27 Safari/537.17"                          
 
     data = urllib.request.urlopen(urllib.request.Request(url, headers=headers)).read()
+    # temp = os.path.join(os.getcwd(), 'resources/')
+    # file_path = os.path.join(temp, "Daily_Incident_Summary.pdf")
     
-    # Parse the HTML content with BeautifulSoup
-    soup = BeautifulSoup(data, 'html.parser')
+    # if not os.path.exists(temp):
+    #     os.makedirs(temp)
+
+    with open('resources/DailyIncidentSummary.pdf', 'wb') as pdf_file:
+            pdf_file.write(data)
     
-    # For all hyperlinks 
-    links = soup.find_all('a')
-    
-    # Check for incidents PDF using regular expression and download
-    for link in links:
-        if link.get('href'):
-            if re.search("daily_incident_summary.pdf", link.get('href')):                
-                pdf_url = urllib.parse.urljoin(url, link.get('href'))  # Handle relative URLs
-                response = urllib.request.urlopen(pdf_url)
-                temp = os.path.join(os.getcwd(), 'temp')
-                file_path = os.path.join(temp, "Daily_Incident_Summary.pdf")
-                
-                if not os.path.exists(temp):
-                    os.makedirs(temp)
-                
-                with open(file_path, 'wb') as pdf_file:
-                    pdf_file.write(response.read())
-                
-                print(f"PDF file downloaded and saved to: {file_path}")
-                return file_path
-    
-    # If no PDF found
-    print("No PDF file found.")
-    return None
+    return 'resources/DailyIncidentSummary.pdf'
+
 
 def extractincidents(incident_data):
     """
@@ -57,10 +40,7 @@ def extractincidents(incident_data):
         Return:
             all_rows: A list containing all the individual incident records
     """
-    if incident_data:
-        reader = PdfReader(incident_data)
-    else:
-        return None
+    reader = PdfReader(incident_data)
     all_rows = []
     page = reader.pages[0]
     first_page = True
@@ -103,6 +83,7 @@ def extractincidents(incident_data):
         last_page -= 1
     return all_rows
 
+
 def createdb():
     """
         Creates a database in the resources directory
@@ -111,14 +92,16 @@ def createdb():
             db_path: path for the databse.
     """
     # Define the path and database name
+    # par_dir = os.path.abspath(os.path.join(os.getcwd(), os.pardir))
+    # db_directory = os.path.join(par_dir, 'resources')
     db_directory = 'resources'
-    db_path = os.path.join(db_directory, 'normanpd.db')
+    db_path = os.path.join(os.getcwd(),db_directory, 'normanpd.db')
     # Remove the directory if it exists, and recreate it
-    if os.path.exists(db_directory):
-        shutil.rmtree(db_directory) # Remove the existing directory and its contents
+    if os.path.exists(db_path):
+        os.remove(db_path) # Remove the existing directory and its contents
 
     # Create the directory
-    os.makedirs(db_directory)
+    # os.makedirs(db_directory)
     with sqlite3.connect(db_path) as con:
         cur = con.cursor()
         cur.execute("CREATE TABLE incidents ( \
@@ -142,16 +125,23 @@ def populatedb(db, incidents):
         Returns:
 
     """
-    with sqlite3.connect(db) as con:
-        cur = con.cursor()
+    if not incidents:
+        print("Incidents are not available.")
+        return
+    try:
+        with sqlite3.connect(db) as con:
+            cur = con.cursor()
 
-        res = cur.execute("SELECT name FROM sqlite_master")
-        table_name = res.fetchone()[0]
+            res = cur.execute("SELECT name FROM sqlite_master")
+            table_name = res.fetchone()[0]
 
-        # Insert values into db
-        sql = f"INSERT INTO {table_name} VALUES(?, ?, ?, ?, ?)"
-        cur.executemany(sql, incidents)
-        con.commit()
+            # Insert values into db
+            sql = f"INSERT INTO {table_name} VALUES(?, ?, ?, ?, ?)"
+            cur.executemany(sql, incidents)
+            con.commit()
+    except Exception as e:
+        print(f"Error database not populated: {e}")
+
 
 def status(db):
     """
@@ -159,20 +149,22 @@ def status(db):
         Args:
             db : path to the database.
     """
-    with sqlite3.connect(db) as con:
-        cur = con.cursor()
-        res = cur.execute("SELECT name FROM sqlite_master")
-        table_name = res.fetchone()[0]
+    try:
+        with sqlite3.connect(db) as con:
+            cur = con.cursor()
+            res = cur.execute("SELECT name FROM sqlite_master")
+            table_name = res.fetchone()[0]
 
-        #fetch values from the table
-        sql = f"SELECT nature, count(*) FROM {table_name} GROUP BY nature"
+            #fetch values from the table
+            sql = f"SELECT nature, count(*) FROM {table_name} GROUP BY nature"
 
-        # Execute the query
-        cur.execute(sql)
+            # Execute the query
+            cur.execute(sql)
 
-        # Fetch and print the results
-        results = cur.fetchall()
-        print(f"fetched results = {len(results)}")
-        for nature, count in results:
-            print(f"{nature}|{count}")
-        
+            # Fetch and print the results
+            results = cur.fetchall()
+            print(f"fetched results = {len(results)}")
+            for nature, count in results:
+                print(f"{nature}|{count}")
+    except Exception as e:
+        print(f"Error status not retrived: {e}")

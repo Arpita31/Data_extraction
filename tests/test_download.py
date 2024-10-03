@@ -3,7 +3,7 @@ import urllib.request
 import os 
 import sys
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-from project0.main import fetchincidents, extractincidents, createdb, populatedb, status
+from project0.project0 import fetchincidents, extractincidents, createdb, populatedb, status
 import shutil
 import sqlite3
 
@@ -11,7 +11,7 @@ import sqlite3
 def test_fetchincidents_success():
     # Test if the incident pdf is getting downloaded 
     pdf_path = fetchincidents("https://www.normanok.gov/sites/default/files/documents/2024-08/2024-08-01_daily_incident_summary.pdf")
-    assert pdf_path.endswith("Daily_Incident_Summary.pdf")
+    assert pdf_path.endswith("DailyIncidentSummary.pdf")
 
 def test_extractincidents():
     # Test if extracting the correct data from pdf file
