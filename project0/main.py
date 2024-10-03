@@ -23,7 +23,7 @@ def fetchincidents(url):
     headers['User-Agent'] = "Mozilla/5.0 (X11; Linux i686) AppleWebKit/537.17 (KHTML, like Gecko) Chrome/24.0.1312.27 Safari/537.17"                          
 
     data = urllib.request.urlopen(urllib.request.Request(url, headers=headers)).read()
-    temp = os.path.join(os.getcwd(), 'project0/resources/')
+    temp = os.path.join(os.getcwd(), 'resources/')
     file_path = os.path.join(temp, "Daily_Incident_Summary.pdf")
                     
     if not os.path.exists(temp):
@@ -100,7 +100,7 @@ def createdb():
     # Define the path and database name
     # par_dir = os.path.abspath(os.path.join(os.getcwd(), os.pardir))
     # db_directory = os.path.join(par_dir, 'resources')
-    db_directory = 'project0/resources'
+    db_directory = 'resources'
     db_path = os.path.join(os.getcwd(),db_directory, 'normanpd.db')
     # Remove the directory if it exists, and recreate it
     if os.path.exists(db_path):
