@@ -33,21 +33,25 @@ def fetchincidents(url):
         
         # Check for incidents PDF using regular expression and download
         for link in links:
-	    href = link.get('href')
-            if href and re.search("daily_incident_summary.pdf", href):                
-		    pdf_url = urllib.parse.urljoin(url, link.get('href'))  # Handle relative URLs
-		    response = urllib.request.urlopen(pdf_url)
-		    temp = os.path.join(os.getcwd(), 'resources')
-		    file_path = os.path.join(temp, "Daily_Incident_Summary.pdf")
-		    
-		    if not os.path.exists(temp):
-			os.makedirs(temp)
-		    
-		    with open(file_path, 'wb') as pdf_file:
-			pdf_file.write(response.read())
-		    
-		    print(f"PDF file downloaded and saved to: {file_path}")
-		    return file_path
+            href = link.get('href')
+            if href and re.search(r"daily_incident_summary\.pdf", href):
+                # Handle relative URLs and construct the full URL for the PDF
+                pdf_url = urllib.parse.urljoin(url, href)
+                response = urllib.request.urlopen(pdf_url)
+
+                # Define the directory and file path for saving the PDF
+                resources_dir = os.path.join(os.getcwd(), 'resources')
+                file_path = os.path.join(resources_dir, "Daily_Incident_Summary.pdf")
+
+                # Create the resources directory if it doesn't exist
+                os.makedirs(resources_dir, exist_ok=True)
+
+                # Download and save the PDF
+                with open(file_path, 'wb') as pdf_file:
+                    pdf_file.write(response.read())
+
+                print(f"PDF file downloaded and saved to: {file_path}")
+                return file_path
         
         # If no PDF found
         print("No PDF file found.")
@@ -126,11 +130,9 @@ def createdb():
     db_directory = 'resources'
     db_path = os.path.join(db_directory, 'normanpd.db')
     # Remove the directory if it exists, and recreate it
-    if os.path.exists(db_directory):
-        shutil.rmtree(db_directory) # Remove the existing directory and its contents
+    if os.path.exists(db_path):
+        os.remove(db_path) # Remove the existing directory and its contents
 
-    # Create the directory
-    os.makedirs(db_directory)
     with sqlite3.connect(db_path) as con:
         cur = con.cursor()
         cur.execute("CREATE TABLE incidents ( \
