@@ -43,52 +43,49 @@ def extractincidents(incident_data):
         Return:
             all_rows: A list containing all the individual incident records
     """
-    try:
-        reader = PdfReader(incident_data)
-        all_rows = []
-        page = reader.pages[0]
-        first_page = True
-        last_page = len(reader.pages)
+    reader = PdfReader(incident_data)
+    all_rows = []
+    page = reader.pages[0]
+    first_page = True
+    last_page = len(reader.pages)
 
 
-        # Pattern for matching records
-        pattern = r"""(\d{1,2}/\d{1,2}/\d{4})       # Date (e.g., 8/1/2024)
-                        \s+
-                        (\d{1,2}:\d{2})             # Time (e.g., 1:19)
-                        \s{2,}
-                        (\d{4}-\d+)                 # Incident Number (e.g., 2024-00055436)
-                        \s{2,}
-                        (.+?)\s{2,}                 # Address
-                        (.+?)\s{2,}                 # Incident Type (e.g., Traffic Stop)
-                        ([A-Z0-9]+)$"""             # Final Code (e.g., OK0140200)
+    # Pattern for matching records
+    pattern = r"""(\d{1,2}/\d{1,2}/\d{4})       # Date (e.g., 8/1/2024)
+                    \s+
+                    (\d{1,2}:\d{2})             # Time (e.g., 1:19)
+                    \s{2,}
+                    (\d{4}-\d+)                 # Incident Number (e.g., 2024-00055436)
+                    \s{2,}
+                    (.+?)\s{2,}                 # Address
+                    (.+?)\s{2,}                 # Incident Type (e.g., Traffic Stop)
+                    ([A-Z0-9]+)$"""             # Final Code (e.g., OK0140200)
 
-        # Compile the regex pattern with verbose flag for readability
-        regex = re.compile(pattern, re.VERBOSE)
+    # Compile the regex pattern with verbose flag for readability
+    regex = re.compile(pattern, re.VERBOSE)
 
-        # Shows the extracted text
-        for page in reader.pages:
-            # To eleminate the header row and extra text 
-            if first_page:
-                row_contents = page.extract_text(extraction_mode="layout", layout_mode_space_vertically=False).splitlines()[3:]
-                first_page = False
-            elif last_page == 1:
-                row_contents = page.extract_text(extraction_mode="layout", layout_mode_space_vertically=False).splitlines()[:-1]
+    # Shows the extracted text
+    for page in reader.pages:
+        # To eleminate the header row and extra text 
+        if first_page:
+            row_contents = page.extract_text(extraction_mode="layout", layout_mode_space_vertically=False).splitlines()[3:]
+            first_page = False
+        elif last_page == 1:
+            row_contents = page.extract_text(extraction_mode="layout", layout_mode_space_vertically=False).splitlines()[:-1]
+        else:
+            row_contents = page.extract_text(extraction_mode="layout", layout_mode_space_vertically=False).splitlines()
+        for index in range(len(row_contents)):
+            row_check = regex.match(row_contents[index])
+            if row_check:
+                extracted_data = [i.strip() for i  in row_check.groups()]
+                extracted_data[:2] = [' / '.join(extracted_data[:2])] # Merging the "date / time" values
+                all_rows.append(extracted_data)
             else:
-                row_contents = page.extract_text(extraction_mode="layout", layout_mode_space_vertically=False).splitlines()
-            for index in range(len(row_contents)):
-                row_check = regex.match(row_contents[index])
-                if row_check:
-                    extracted_data = [i.strip() for i  in row_check.groups()]
-                    extracted_data[:2] = [' / '.join(extracted_data[:2])] # Merging the "date / time" values
-                    all_rows.append(extracted_data)
-                else:
-                    # Multi row record adding the address
-                    all_rows[-1][2] = all_rows[-1][2] + " " + row_contents[index].lstrip()
-            last_page -= 1
-        return all_rows
-    except Exception as e:
-        print(f"Incidents not extracted: {e}")
-        return None
+                # Multi row record adding the address
+                all_rows[-1][2] = all_rows[-1][2] + " " + row_contents[index].lstrip()
+        last_page -= 1
+    return all_rows
+
 
 def createdb():
     """
