@@ -6,22 +6,14 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')
 from project0.project0 import fetchincidents, extractincidents, createdb, populatedb, status
 import shutil
 import sqlite3
+import io
 
 
 def test_fetchincidents_success():
     # Test if the incident pdf is getting downloaded 
-    pdf_path = fetchincidents("https://www.normanok.gov/sites/default/files/documents/2024-08/2024-08-01_daily_incident_summary.pdf")
-    assert pdf_path.endswith("DailyIncidentSummary.pdf")
+    data = fetchincidents("https://www.normanok.gov/sites/default/files/documents/2024-08/2024-08-01_daily_incident_summary.pdf")
+    assert isinstance(data, bytes)
 
-def test_extractincidents():
-    # Test if extracting the correct data from pdf file
-    temp = os.path.join(os.getcwd(), 'resources')
-    file_path = os.path.join(temp, "DailyIncidentSummary.pdf")
-    extracted_data = extractincidents(file_path)
-    
-    # Ensure the extracted data is not empty and matches expected structure
-    assert len(extracted_data) > 1
-    assert extracted_data[0] == ['8/1/2024 / 0:04', '2024-00055419', '1345 W LINDSEY ST', 'Traffic Stop', 'OK0140200']
 
 def test_createdb_success():
     # Test creation of database

@@ -4,7 +4,7 @@ import os
 import pypdf
 from pypdf import PdfReader
 import sqlite3
-import shutil
+import io
 
 
 def fetchincidents(url):
@@ -22,14 +22,15 @@ def fetchincidents(url):
     data = urllib.request.urlopen(urllib.request.Request(url, headers=headers)).read()
     # temp = os.path.join(os.getcwd(), 'resources/')
     # file_path = os.path.join(temp, "Daily_Incident_Summary.pdf")
-    
+    # folder = 'resorces/'
+    # file_path = folder + 'DailyIncidentSummary.pdf'
     if not os.path.exists('resources/'):
         os.makedirs('resources/')
 
     with open('resources/DailyIncidentSummary.pdf', 'wb') as pdf_file:
             pdf_file.write(data)
-    
-    return 'resources/DailyIncidentSummary.pdf'
+            print(type(data))
+    return data
 
 
 def extractincidents(incident_data):
@@ -40,7 +41,10 @@ def extractincidents(incident_data):
         Return:
             all_rows: A list containing all the individual incident records
     """
-    reader = PdfReader(incident_data)
+    pdf_data = io.BytesIO(incident_data)
+    pdf_data.seek(0)
+    reader = PdfReader(pdf_data)
+    
     all_rows = []
     page = reader.pages[0]
     first_page = True
@@ -94,9 +98,10 @@ def createdb():
     # Define the path and database name
     # par_dir = os.path.abspath(os.path.join(os.getcwd(), os.pardir))
     # db_directory = os.path.join(par_dir, 'resources')
-    db_directory = 'resources'
-    db_path = os.path.join(os.getcwd(),db_directory, 'normanpd.db')
+    # db_directory = 'resources'
+    # db_path = os.path.join(os.getcwd(),db_directory, 'normanpd.db')
     # Remove the directory if it exists, and recreate it
+    db_path = 'resources/normanpd.db'
     if os.path.exists(db_path):
         os.remove(db_path) # Remove the existing directory and its contents
 
