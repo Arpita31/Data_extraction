@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-# Example main.py
 import argparse
 
 import urllib.request
@@ -33,25 +31,21 @@ def fetchincidents(url):
         
         # Check for incidents PDF using regular expression and download
         for link in links:
-            href = link.get('href')
-            if href and re.search(r"daily_incident_summary\.pdf", href):
-                # Handle relative URLs and construct the full URL for the PDF
-                pdf_url = urllib.parse.urljoin(url, href)
-                response = urllib.request.urlopen(pdf_url)
-
-                # Define the directory and file path for saving the PDF
-                resources_dir = os.path.join(os.getcwd(), 'resources')
-                file_path = os.path.join(resources_dir, "Daily_Incident_Summary.pdf")
-
-                # Create the resources directory if it doesn't exist
-                os.makedirs(resources_dir, exist_ok=True)
-
-                # Download and save the PDF
-                with open(file_path, 'wb') as pdf_file:
-                    pdf_file.write(response.read())
-
-                print(f"PDF file downloaded and saved to: {file_path}")
-                return file_path
+            if link.get('href'):
+                if re.search("daily_incident_summary.pdf", link.get('href')):                
+                    pdf_url = urllib.parse.urljoin(url, link.get('href'))  # Handle relative URLs
+                    response = urllib.request.urlopen(pdf_url)
+                    # temp = os.path.join(os.getcwd(), 'resources')
+                    # file_path = os.path.join(temp, "Daily_Incident_Summary.pdf")
+                    
+                    # if not os.path.exists(temp):
+                    #     os.makedirs(temp)
+                    file_path = "resources/Daily_Incident_Summary.pdf"
+                    with open(file_path, 'wb') as pdf_file:
+                        pdf_file.write(response.read())
+                    
+                    print(f"PDF file downloaded and saved to: {file_path}")
+                    return file_path
         
         # If no PDF found
         print("No PDF file found.")
